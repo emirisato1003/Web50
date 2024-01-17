@@ -1,0 +1,31 @@
+{% extends "encyclopedia/layout.html" %}
+
+{% block title %}
+{{ title }}
+{% endblock %}
+
+{% block body %}
+<div class="container">
+    <div class="row mt-5">
+        <div class="col-8 mx-auto">
+            <h1 class="display-4">{{ title }}</h1>
+            <hr>
+            <form action="{% url 'encyclopedia:save' %}" method="POST">
+                {% csrf_token %}
+                <div class="mb-3">
+                    <label for="title" class="form-label">Title</label>
+                    <input type="text" name="title" class="form-control" value="{{ title }}" id="title" placeholder="Page Title">
+                </div>
+
+                <div class="mb-3">
+                    <label for="content" class="form-label">Content</label>
+                    <textarea class="form-control" name="content" id="exampleFormControlTextarea1" rows="20">{{ content }}</textarea>
+                </div>
+                <button type="submit" class="btn btn-primary">Save Change</button>
+                <button type="submit" class="btn btn-danger">Cancel</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
