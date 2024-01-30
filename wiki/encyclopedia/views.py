@@ -26,7 +26,8 @@ def entry(request, title):
     entry_content = convert_md(title)
     if entry_content == None:
         return render(request, "encyclopedia/error.html",{
-            "message": "This entry page does not exist..."
+            "message": "404",
+            "message2": "This page does not exist."
         })
     else:
         return render(request, "encyclopedia/entry.html", {
@@ -73,24 +74,36 @@ def search(request):
                     "entries": util.list_entries()
                 })
 
+
+class CreateEntryForm(forms.Form):
+    title = forms.CharField(label='Title', max_length=100, required=True, widget=forms.TextInput(attrs={'class':'form-control'}))
+    content = forms.CharField(widget=forms.Textarea(attrs={'class':'form-control', 'rows': 20}), label='Content', required=True)
+
 def create(request):
     if request.method == "GET":
-        return render(request, "encyclopedia/create.html")
-    else:
-        title = request.POST['title']
-        content = request.POST['content']
-        titleExist = util.get_entry(title)
-        if titleExist is not None:
-            return render(request, "encyclopedia/error.html",{
-                "message": "the page is already existed."
-            })
+        form = CreateEntryForm()
+        return render(request, "encyclopedia/create.html", {'form': form})
+
+    if request.method == "POST":
+        form = CreateEntryForm(request.POST)
+        if form.is_valid():
+            title = form.cleaned_data['title']
+            content = form.cleaned_data['content']
+
+            title_exist = util.get_entry(title)
+            if title_exist:
+                return render(request, "encyclopedia/error.html",{
+                "message": "The page is already existed."
+                })
+            else:
+                util.save_entry(title, content)
+                content = convert_md(title)
+                return render(request, "encyclopedia/entry.html",{
+                    "title": title,
+                    "content": content
+                })
         else:
-            util.save_entry(title, content)
-            content = convert_md(title)
-            return render(request, "encyclopedia/entry.html",{
-                "title": title,
-                "content": content
-            })
+            return render(request, "encyclopedia/create.html",{'form': form})
 
 def edit(request):
     if request.method == 'POST':

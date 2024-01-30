@@ -1,11 +1,13 @@
 {% extends "encyclopedia/layout.html" %}
 
 {% block title %}
-    Encyclopedia
+Encyclopedia
 {% endblock %}
 
 {% block body %}
-    <h1>{{ message }}</h1>
-    <img src="https://imgs.search.brave.com/GBw_IaiviUEYWnQSsxUc-1vziFA6UxDqIG7qqZvhsZk/rs:fit:860:0:0/g:ce/aHR0cHM6Ly9hc3Nl/dHMtZ2xvYmFsLndl/YnNpdGUtZmlsZXMu/Y29tLzYzNjRiNmZk/MjZlMjk4YjExZmI5/MzkxZi82NDgxNjAw/NmIxMWZmNTUxMzhj/Njk2MmFfVGh1bWJu/YWlsLTAwMTM1LnBu/Zw" alt="the page is not exist">
-
+<div class="text-center">
+    <h1 class="text-danger">{{ message }}</h1>
+    <p>{{ message2 }}<br><a href="{% url 'encyclopedia:index' %}" class="link-secondary link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover">Back to Home Page</a></p>
+    <img src="https://images.pexels.com/photos/406014/pexels-photo-406014.jpeg?auto=compress&cs=tinysrgb&w=1260&h=720&dpr=1" alt="dog">
+</div>
 {% endblock %}

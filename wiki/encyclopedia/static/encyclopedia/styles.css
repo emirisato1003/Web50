@@ -3,6 +3,10 @@ body {
     background-color: white;
 }
 
+a:hover{
+    text-decoration: none;
+}
+
 code {
     white-space: pre;
 }
@@ -15,10 +19,6 @@ h1 {
 textarea {
     height: 90vh;
     width: 80%;
-}
-
-.main {
-    padding: 10px;
 }
 
 .search {
