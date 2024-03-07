@@ -16,18 +16,6 @@ Create New Page
             <form action="{% url 'encyclopedia:create' %}" method="POST">
                 {% csrf_token %}
                 {{ form.as_p }}
-                <!-- <div class="mb-3">
-                    {% if message %}
-                        {{ message }}
-                    {% endif %}
-                    <label for="title" class="form-label">Title</label>
-                    <input type="text" name="title" class="form-control" id="title" placeholder="Page Title">
-                </div>
-
-                <div class="mb-3">
-                    <label for="content" class="form-label">Content</label>
-                    <textarea class="form-control" name="content" id="exampleFormControlTextarea1" rows="20"></textarea>
-                </div> -->
                 <button type="submit" class="btn btn-success">Save</button>
                 <a href="{% url 'encyclopedia:index' %}" class="link-secondary link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover">Cancel</a>
             </form>
