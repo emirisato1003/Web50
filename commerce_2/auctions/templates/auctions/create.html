@@ -1,0 +1,45 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+<div class="container">
+    <div class="row">
+        <div class="col-sm-12 col-md-8 mx-auto">
+            <h2 class="text-center text-secondary fw-lighter my-4">Create Listings</h2>
+            <hr>
+            <form action="{% url 'create' %}" class="mb-5 bg-body-secondary p-5 rounded-2" method="POST">
+                {% csrf_token %}
+                <div class="mb-3">
+                    <label for="exampleFormControlInput1" class="form-label">Title</label>
+                    <input type="text" name="title" class="form-control" id="title" placeholder="Enter title" required>
+                </div>
+
+                <div class="mb-3">
+                    <label for="exampleFormControlTextarea1" class="form-label">Description</label>
+                    <textarea class="form-control" name="description" id="desctiption" rows="3" required></textarea>
+                </div>
+
+                <div class="input-group mb-3">
+                    <span class="input-group-text">$</span>
+                    <input type="text" min="0" name="price" class="form-control" id="price" required>
+                    <span class="input-group-text">.00</span>
+                </div>
+
+                <div class="mb-3">
+                    <label for="exampleFormControlInput1" class="form-label">Image</label>
+                    <input type="text" name="imageUrl" class="form-control" id="imageUrl" placeholder="Image URL">
+                </div>
+
+                <div class="mb-3">
+                    <label for="category" class="form-label">Choose a category: </label>
+                    <select name="category" class="form-select" id="category" required>
+                        {% for category in categories %}
+                        <option value="{{ category.id }}">{{ category }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <input type="submit" class="btn btn-success mt-3" value="Save">
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

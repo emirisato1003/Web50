@@ -1,0 +1,78 @@
+{% extends "auctions/layout.html" %}
+{% load humanize %}
+
+{% block body %}
+
+<div class="container-fluid mt-5 ml-5">
+  {% if user.is_authenticated %}
+    {% if user == listing.user and listing.status == True %}
+      <a href="{% url 'edit' listing.id %}" class="btn btn-lg btn-primary">Edit Listing</a>
+    {% endif %}
+  {% endif %}
+
+  {% if user.is_authenticated %}
+    {% if user == listing.user and listing.status == True %}
+      <a href="{% url 'close' listing.id %}" class="btn btn-lg btn-primary">Close Listing</a>
+    {% endif %}
+  {% endif %}
+
+  {% if user.is_authenticated %}
+    {% if not watching %}
+      <form action="{% url 'watch' listing.id %}" method="POST" style="display:inline-block">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-lg btn-primary">Add to Watchlist</button>
+      </form>
+    {% else %}
+    <form action="{% url 'watch_remove' watching %}?redirect=listing" method="POST" style="display:inline-block;">{% csrf_token %}
+      <input type="hidden" name="listing" value="{{listing.id}}">
+      <button type="submit" class="btn btn-lg btn-primary">Stop Watching
+      </button>
+    </form>
+    {% endif %}
+  {% endif %}
+</div>
+
+<div class="container-fluid">
+  <div class="row border border-4 rounded bg-white shadow m-5 p-5">
+    <div class="col-sm-12 col-lg-8">
+        {% if user.is_authenticated and user.username == listing.winner %}
+          <div class="alert alert-success">
+            <strong>🍻 Success!</strong> You have won the auction for the {{listing.item}}!
+          </div>
+        {% endif %}
+        <h3 class="display-4 font-weight-bold mb-0"><a class="link" href="{% url 'listing' listing.id %}">{{listing.item}}</a></h3>
+        {% if listing.status == False %}
+          <div class="alert alert-danger mb-0 mt-2">✋🏽 This auction has ended. Please look for and bid on other listings.</div>
+        {% endif %}
+        <br><span class="font-weight-bold">Listed by:</span> {{listing.user}} on {{listing.date_created}}<br>
+        <span class="font-weight-bold">Listing Price:</span> ${{listing.price|intcomma}}</br>
+        {% if highest_bidder.bid %}  
+          <span class="font-weight-bold">Current Bid:</span> ${{highest_bidder.bid|intcomma}}</br>
+        {% else %}
+          <span class="font-weight-bold">Current Bid:</span> 
+          {% if highest_bidder.price >= 0 %}
+            ${{ highest_bidder.price|intcomma }}
+          {% else %}
+            No bids have been placed
+          {% endif %}
+        </br>
+        {% endif %}
+        <span class="font-weight-bold">Category:</span> <a class="link" href="{% url "category" listing.category %}">{{listing.category}}</a></br>
+        <span class="font-weight-bold">Description:</span> {{listing.description}}</p>
+        {% if user.is_authenticated %}
+          {% include "auctions/includes/bid.html" %}
+        {% endif %}
+      </div>
+    <div class="col-sm-12 col-lg-4 d-flex justify-content-center align-items-center">
+        {% if listing.img %}
+          <img src="{{listing.img}}" alt="{{listing.item}}" height="200">
+        {% else %}
+          <p>No image available</p>
+        {% endif %}
+    </div>
+  </div>
+</div>
+
+{% include "auctions/includes/comments.html" %}
+
+{% endblock %}

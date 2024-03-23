@@ -1,0 +1,32 @@
+{% load humanize %}
+
+{% if listing.status == True %}
+{% block bid %}
+    {% if listing.user != request.user %}
+        <form action="{% url 'bid' %}" method="POST" id="bid">
+            {% csrf_token %}
+            <input type="hidden" name="listing_id" value="{{ listing.id }}">
+            <div class="form-group mt-3">
+                <label for="bid" class="h3 crimson">Bid</label>
+                    {% for message in messages %}
+                        <div class="alert alert-warning">{{ message }}</div>
+                    {% endfor %}
+                <p>There are currently {{ bids.count }} bid(s).<br> 
+                    {% if bids.count == 0 %}
+                    Be the first to bid!
+                    {% else %}
+                        <strong>${{ highest_bidder.price|intcomma }}</strong> is the highest bid.<br>
+                        {% if highest_bidder.user == listing.user %}
+                            <strong>You</strong> are the currently the highest bidder. 🙌🏽
+                        {% else %}
+                            <strong>{{ highest_bidder.user }}</strong> is currently the highest bidder.
+                        {% endif %}
+                    {% endif %}
+                </p>
+                <input type="number" step="0.01" name="bid" id="bid" class="form-control" placeholder="Enter your bid">
+                <button type="submit" class="btn btn-primary mt-3">Place Your Bid</button>
+            </div>
+        </form>
+    {% endif %}
+{% endblock %}
+{% endif %}

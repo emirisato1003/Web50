@@ -1,0 +1,14 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+<h2>Active Listings</h2>
+<div class="row">
+    <div class="col">
+        {% if error_message %}
+        {{ error_message }}
+        {% endif %}
+        {% for listing in auction_listings %}
+    </div>
+</div>
+
+{% endblock %}

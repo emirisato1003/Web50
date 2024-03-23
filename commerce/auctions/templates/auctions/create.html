@@ -1,0 +1,45 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+
+<h2>Create Listing</h2>
+<div class="container">
+    <div class="row">
+        <div class="col-lg-6 mx-auto">
+            <form action="{% url 'create' %}" method="POST">
+                {% csrf_token %}
+                <div class="mb-3">
+                    <label for="exampleFormControlInput1" class="form-label">Title</label>
+                    <input type="text" name="title" class="form-control" id="title" placeholder="Enter title">
+                </div>
+
+                <div class="mb-3">
+                    <label for="exampleFormControlTextarea1" class="form-label">Description</label>
+                    <textarea class="form-control" name="description" id="desctiption" rows="3"></textarea>
+                </div>
+
+                <div class="input-group mb-3">
+                    <span class="input-group-text">$</span>
+                    <input type="text" name="price" class="form-control" id="price">
+                    <span class="input-group-text">.00</span>
+                </div>
+
+                <div class="mb-3">
+                    <label for="exampleFormControlInput1" class="form-label">Image</label>
+                    <input type="text" name="imageUrl" class="form-control" id="imageUrl" placeholder="Image URL">
+                </div>
+
+                <div class="mb-3">
+                    <label for="category" class="form-label">Choose a category: </label>
+                    <select name="category" class="form-select" id="category">
+                        {% for category in categories %}
+                        <option value="{{ category.id }}">{{ category }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <input type="submit" class="btn btn-success mt-3" value="Save">
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

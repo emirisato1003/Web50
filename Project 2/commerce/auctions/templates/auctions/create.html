@@ -1,0 +1,45 @@
+{% extends "auctions/layout.html" %}
+{% block title %}Create Listing{% endblock %}
+
+{% block body %}
+<div class="container-fluid m-3 p-4">
+    <div class="row">
+        <div class="col-6">
+            <h2>Create Listing</h2>
+            {% include "auctions/includes/listing_form.html" %}
+            {% comment %} <form action="{% url 'create' %}" method="POST">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="item">Item you want to sell (Required)</label>
+                    <input type="text" class="form-control" id="item" name="item" required>
+                </div>
+                <div class="form-group">
+                    <label for="description">Description (Required)</label>
+                    <textarea class="form-control" id="description" name="description" rows="3" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="img">Image (URL to your item (Optional))</label>
+                    <input type="text" class="form-control" id="img" name="img" placeholder="Image">
+                </div>
+                <div class="form-group">
+                    <label for="category">Category (Required)</label>
+                    <select class="form-control" id="category" name="category">
+                        <option value="Auto">Auto</option>
+                        <option value="Electronics">Electronics</option>
+                        <option value="Fashion">Fashion</option>
+                        <option value="Home">Home Furnishings</option>
+                        <option value="Musical Instrument">Musical Instruments</option>
+                        <option value="Pets">Pets</option>
+                        <option value="Toys">Toys</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="price">Starting Price (Required)</label>
+                    <input type="number" step="0.01" class="form-control" id="price" name="price" required>
+                </div>
+                <button type="submit" class="btn btn-primary">Save &amp; Publish Your Listing</button>
+            </form> {% endcomment %}
+        </div> <!-- col-6 -->
+    </div> <!-- row -->
+</div>
+{% endblock %}

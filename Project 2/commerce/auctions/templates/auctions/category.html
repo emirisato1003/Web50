@@ -1,0 +1,10 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+<div class="container-fluid mt-5 pl-5">
+    <h2>Listings in <strong>{{ category }}</strong></h2>
+</div>
+
+{% include "auctions/includes/listings.html" %}
+
+{% endblock %}

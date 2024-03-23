@@ -1,0 +1,52 @@
+{% load humanize %}
+
+<div class="container-fluid m-3 p-4">
+    {% if request.GET.message|length > 0 %}
+        <p>{{ request.GET.message|safe }}</p>
+    {% endif %}
+    {% if listings %}     
+        {% for listing in listings %}
+            <div class="row border border-4 rounded p-4 mx-5 my-5 bg-white shadow">
+            <div class="col-12 col-sm-12 col-lg-8 p-3">
+                <h3 class="display-4 font-weight-bold mb-0"><a class="link" href="{% url 'listing' listing.id %}">{{listing.item}}</a></h3>
+                {% if listing.status == False %}
+                    <div class="alert alert-danger mb-0 mt-2">✋🏽 This auction has ended. Please look for and bid on other listings.</div>
+                {% endif %}
+                <br><span class="font-weight-bold">Listed by:</span> {{listing.user}} on {{listing.date_created}}<br>
+                <span class="font-weight-bold">Listing Price:</span> ${{listing.price|intcomma}}</br>
+                {% if listing.current_bid != None %}
+                <span class="font-weight-bold">Current Bid:</span> 
+                    ${{listing.current_bid|intcomma}}</br>
+                {% endif %}
+                <span class="font-weight-bold">Bidding:</span> 
+                {% if listing.bid_count == 0 %}
+                    No bids</br>
+                {% else %}
+                    {% if listing.bid_count == 1 %}
+                        {{ listing.bid_count}} bid</br>
+                    {% else %}
+                        {{ listing.bid_count}} bids</br>
+                    {% endif %}
+                {% endif %}
+                <span class="font-weight-bold">Category:</span> <a class="link" href="{% url "category" listing.category %}">{{listing.category}}</a></br>
+                <span class="font-weight-bold">Description:</span><br>{{listing.description}}</p>
+
+                {% if user.is_authenticated %}
+                    {% if user != listing.user and listing.status == True %}
+                        <a class="link" href="{% url 'listing' listing.id %}#bid">Bid on this item ></a>
+                    {% endif %}
+                {% endif %}
+            </div>
+            <div class="col-12 col-sm-12 col-lg-4 d-flex justify-content-center align-items-center">
+                {% if listing.img %}
+                <img src="{{listing.img}}" alt="{{listing.item}}" height="200">
+                {% else %}
+                <p>No image available</p>
+                {% endif %}
+            </div>
+            </div>
+        {% endfor %}
+    {% else %}
+        <p class="h3">There are currently no listings.</p>
+    {% endif %}
+</div>

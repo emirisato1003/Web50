@@ -1,0 +1,40 @@
+{% block edit_form %}
+    {% if not listing %}
+    <form action="{% url 'create' %}" method="POST">
+    {% else %}
+    <form action="{% url 'edit_save' listing.id %}" method="POST">
+    {% endif %}
+    {% csrf_token %}
+    <div class="form-group">
+        <label for="item">Item you want to sell (Required)</label>
+        <input type="text" class="form-control" id="item" name="item" value="{{ listing.item }}" required>
+    </div>
+    <div class="form-group">
+        <label for="description">Description (Required)</label>
+        <textarea class="form-control" id="description" name="description" rows="4" required>{{ listing.description }}</textarea>
+    </div>
+    <div class="form-group">
+        <label for="img">Image (URL to your item (Optional))</label>
+        <input type="text" class="form-control" id="img" name="img" value="{{ listing.img }}">
+    </div>
+    <div class="form-group">
+        <label for="category">Category (Required)</label>
+        <select class="form-control" id="category" name="category" value="{{ listing.category }}">
+            <option value="Auto">Auto</option>
+            <option value="Boats">Boats</option>
+            <option value="Books">Books</option>
+            <option value="Electronics">Electronics</option>
+            <option value="Fashion">Fashion</option>
+            <option value="Home">Home Furnishings</option>
+            <option value="Musical Instrument">Musical Instruments</option>
+            <option value="Pets">Pets</option>
+            <option value="Toys">Toys</option>
+        </select>
+    </div>
+    <div class="form-group">
+        <label for="price">Bidding Starts At (Required)</label>
+        <input type="number" step="0.01" class="form-control" id="price" name="price" value="{{ listing.price }}" required>
+    </div>
+    <button type="submit" class="btn btn-primary">Save Listing</button>
+</form>
+{% endblock %}

@@ -1,0 +1,29 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+<h2>WatchList</h2>
+{% for listing in auction_listings %}
+<div class="card mb-3" style="max-width: 540px;">
+    <div class="row g-0">
+        <div class="col-md-4">
+            {% if listing.imageUrl %}
+            <a href="{% url 'listing' listing.id %}"><img src="{{ listing.imageUrl }}" class="img-fluid rounded-start" alt="{{ listing.title }}"></a>
+            {% else %}
+            <a href="{% url 'listing' listing.id %}"><img src="https://as1.ftcdn.net/v2/jpg/05/04/28/96/1000_F_504289605_zehJiK0tCuZLP2MdfFBpcJdOVxKLnXg1.jpg" class="img-fluid rounded-start" alt="Image coming soon"><a href="{% url 'listing' listing.id %}"></a>
+                {% endif %}
+        </div>
+        <div class="col-md-8">
+            <div class="card-body">
+                <a href="{% url 'listing' listing.id %}">
+                    <h3 class="card-title">{{ listing.title }}</h3>
+                </a>
+                <h5 class="card-title">{{ listing.price }}</h5>
+                <p class="card-text">{{ listing.description }}</p>
+                <p class="card-text"><small class="text-body-secondary">Last updated 3 mins ago</small></p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endfor %}
+
+{% endblock %}
