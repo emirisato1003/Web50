@@ -45,6 +45,7 @@ class FlightTestCase(TestCase):
     def test_index(self):
         c = Client()
         response = c.get("/flights/")
+        print(response)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.context["flights"].count(), 3)
 
@@ -64,7 +65,7 @@ class FlightTestCase(TestCase):
         self.assertEqual(response.status_code, 404)
 
     def test_flight_page_passengers(self):
-        f = Flight.objects.get(pk=2)
+        f = Flight.objects.get(pk=1)
         p = Passenger.objects.create(first="Alice", last="Adams")
         f.passengers.add(p)
 
@@ -74,12 +75,10 @@ class FlightTestCase(TestCase):
         self.assertEqual(response.context["passengers"].count(), 1)
 
     def test_flight_page_non_passengers(self):
-        f = Flight.objects.get(pk=2)
+        f = Flight.objects.get(pk=1)
         p = Passenger.objects.create(first="Alice", last="Adams")
 
         c = Client()
         response = c.get(f"/flights/{f.id}")
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.context["non_passengers"].count(), 1)
-
-
