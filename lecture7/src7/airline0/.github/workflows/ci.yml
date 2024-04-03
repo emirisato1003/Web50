@@ -1,0 +1,19 @@
+# workflow name
+name: Testing
+# on:push - when should this workflow run
+# on:push - anytime someone pushes their code to GitHub, run this workflow
+on: push
+
+# jobs: - what tasks should happen anytime that I try and push to this repository
+jobs:
+# test_project - any name is fine
+  test_project:
+  # what type of machine to run this code
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    # description what is going on
+    - name: Run Django unit tests
+      run: |
+        pip3 install --user django
+        python3 manage.py test
