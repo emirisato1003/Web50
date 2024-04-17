@@ -1,0 +1,145 @@
+{% extends "network/layout.html" %}
+
+{% block body %}
+<script>
+    function getCookie(name) {
+        const value = `; ${document.cookie}`;
+        const parts = value.split(`; ${name}=`);
+        if (parts.length == 2) return parts.pop().split(';').shift();
+    }
+
+
+    function submit_handler(id) {
+        const post_content = document.querySelector(`#edit_post_${id}`).value;
+        const content = document.querySelector(`#content_${id}`);
+        const modal = document.querySelector(`#modal_edit_post_${id}`);
+        fetch(`/edit/${id}`, {
+            method: "POST",
+            headers: { "Content-type": "application/json", "X-CSRFToken": getCookie("csrftoken") },
+            body: JSON.stringify({
+                post: post_content
+            })
+        })
+            .then(response => response.json())
+            .then(result => {
+                content.innerHTML = result.data;
+            });
+    }
+
+    function likes_handler(id, user_liked) {
+        // console.log(user_liked)
+        // console.log(id)
+        // console.log(user_liked.indexOf(id));
+        if (user_liked.indexOf(id) >= 0) {
+            let liked = true;
+        } else {
+            let liked = false;
+        }
+    }
+</script>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-lg-6 col-md-7 mx-auto">
+            <!-- check if the user is logged in -->
+            {% if user.is_authenticated %}
+            <h3 class="m-3"><i class="fa-regular fa-comment"></i> New Post</h3>
+            <form id="post_form" class="mx-3" action="{% url 'new_post' %}" method="POST">
+                {% csrf_token %}
+                <textarea class="form-control rounded-5" name="post" id="post" rows="1"></textarea>
+                <div class="d-grid justify-content-end">
+                    <input class="my-2 btn btn-success rounded-5" type="submit" value="Post">
+                </div>
+            </form>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col">
+            <!-- all posts starts -->
+            <h2 class="my-3 display-4">All Posts</h2>
+
+            <hr class="border border-warning">
+
+            <div class="list-group mt-5 mb-3 mx-3">
+                {% for post in current_page %}
+                <div class="list-group-item">
+                    <div class="d-flex w-100 justify-content-between">
+                        <a href="{% url 'profile' post.user.id %}" class="text-decoration-none text-warning-emphasis">
+                            <h5 class="mb-1">@{{ post.user }}</h5>
+                        </a>
+                    </div>
+                    <p class="mb-1" id="content_{{ post.id }}">{{ post.post }}</p>
+                    <small>{{ post.date_posted }}</small>
+
+
+                    <!-- edit and delete section starts -->
+                    {% if post.user == user %}
+                    <div id="edit" class="mt-2">
+                        <button type="button" class="btn btn-sm btn-outline-dark" data-bs-toggle="modal" data-bs-target="#modal_edit_post_{{ post.id }}">
+                            <i class="fa-solid fa-pen-to-square"></i> Edit
+                        </button>
+                    </div>
+
+                    <!-- Modal -->
+                    <div class="modal fade" id="modal_edit_post_{{ post.id }}" tabindex="-1" aria-labelledby="modal_edit_post_{{ post.id }}_label" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h1 class="modal-title fs-5" id="modal_edit_post_{{ post.id }}_label">Edit Post</h1>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <textarea name="content" id="edit_post_{{ post.id }}" rows="5" cols="61">{{ post.post }}</textarea>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-outline-success" onclick="submit_handler({{ post.id }})" data-bs-dismiss="modal">Save</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- modal ends -->
+
+                    {% endif %}
+                    <!-- edit and delete section ends -->
+
+                    <!-- like / dislike section starts -->
+                    <div class="d-flex flex-row gap-3 mt-3">
+                        <!-- like starts -->
+                        {% if post.id in user_liked %}
+                        <div id="like_{{ post.id }}" class="like text-danger" onclick="likes_handler({{ post.id }}, {{ user_liked }})"><i class="fa-solid fa-thumbs-up"></i> 1</div>
+                        {% else %}
+                        <div id="like_{{ post.id }}" class="like text-danger" onclick="likes_handler({{ post.id }}, {{ user_liked }})"><i class="fa-regular fa-thumbs-up"></i> 1</div>
+                        {% endif %}
+                        <!-- like ends -->
+                        <!-- dislike starts -->
+                        {% if post.id in user_disliked %}
+                        <div id="dislike_{{ post.id }}" class="dislike text-secondary" onclick="dislikes_handler({{ post.id }})"><i class="fa-regular fa-thumbs-down"></i></div>
+                        {% else %}
+                        <div id="dislike_{{ post.id }}" class="dislike text-secondary" onclick="dislikes_handler({{ post.id }})"><i class="fa-regular fa-thumbs-down"></i></div>
+                        {% endif %}
+                        <!-- dislike ends -->
+                    </div>
+                    <!-- like / dislike section ends -->
+
+                </div>
+                {% endfor %}
+            </div>
+            <!-- all posts ends -->
+
+            <!-- paginator stars -->
+            <nav class="mt-3" aria-label="Page navigation example">
+                <ul class="pagination d-flex justify-content-center">
+                    {% if current_page.has_previous %}
+                    <li class="page-item"><a class="page-link" href="?page={{ current_page.previous_page_number }}">Previous</a></li>
+                    {% endif %}
+                    {% if current_page.has_next %}
+                    <li class="page-item"><a class="page-link" href="?page={{ current_page.next_page_number }}">Next</a></li>
+                    {% endif %}
+                </ul>
+            </nav>
+            <!-- paginator ends -->
+        </div>
+    </div>
+</div>
+{% endblock %}

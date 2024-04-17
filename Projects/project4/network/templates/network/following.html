@@ -1,0 +1,24 @@
+{% extends "network/layout.html" %}
+
+{% block body %}
+
+<h2 class="my-3 display-4">Following User Posts</h2>
+
+<hr class="border border-warning">
+
+<div class="list-group mt-5 mb-3 mx-3">
+    {% for post in current_page %}
+    <div class="list-group-item">
+        <div class="d-flex w-100 justify-content-between">
+            <a href="{% url 'profile' post.user.id %}" class="text-decoration-none text-warning-emphasis">
+                <h5 class="mb-1">@{{ post.user }}</h5>
+            </a>
+        </div>
+        <p class="mb-1" id="content">{{ post.post }}</p>
+        <small>{{ post.date_posted }}</small>
+
+    </div>
+    {% endfor %}
+</div>
+
+{% endblock %}
