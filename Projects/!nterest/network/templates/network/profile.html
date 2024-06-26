@@ -1,0 +1,276 @@
+{% extends "network/layout.html" %}
+{% load static %}
+{% block body %}
+<script>
+    function submit_handler(id) {
+        // console.log(id);
+        const img_box_p_form = document.getElementById('img-box-p-form');
+        const img_box_i_form = document.getElementById('img-box-i-form');
+
+        const p_img_box = document.getElementById('p-img-box');
+        const i_img_box = document.getElementById('i-img-box');
+
+        const p_form = document.getElementById('p-form');
+
+        const p_image_id = document.getElementById('id_profile_img');
+        const i_image_id = document.getElementById('id_icon_img');
+
+        const csrf = document.getElementsByName('csrfmiddlewaretoken');
+        const formData = new FormData();
+        formData.append('csrfmiddlewaretoken', csrf[0].value);
+        if (p_image_id.files[0]) {
+            formData.append('profile_img', p_image_id.files[0]);
+        }
+        if (i_image_id.files[0]) {
+            formData.append('icon_img', i_image_id.files[0]);
+        }
+        fetch(`/edit_profile/${id}`, {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'X-Requested-With': 'XMLHttpRequest',
+            },
+            body: formData,
+        }).then(res => {
+            return res.json();
+        })
+            .then(data => {
+                if (p_image_id.files[0] != undefined) {
+                    const p_img_data = p_image_id.files[0];
+                    console.log(p_img_data);
+                    const p_url = URL.createObjectURL(p_img_data);
+                    img_box_p_form.innerHTML = `<img src="${p_url}" class="d-block w-100 rounded-3" height="200" alt="">`;
+                    p_img_box.innerHTML = `<img src="${p_url}" class="d-block w-100 rounded-3" height="200" alt="">`;
+                }
+                if (i_image_id.files[0] != undefined) {
+                    console.log(data);
+                    const i_img_data = i_image_id.files[0];
+                    const i_url = URL.createObjectURL(i_img_data);
+                    img_box_i_form.innerHTML = `<img src="${i_url}" class="d-block w-100 rounded-3" height="200" alt="">`;
+                    i_img_box.innerHTML = `<img src="${i_url}" alt="" loading="lazy" class="mt-2">`;
+                    i_img_box.classList.remove('user-icon');
+                }
+            });
+    }
+
+
+    function like_handler(post_id) {
+        const like_btn = document.getElementById(`like-btn-${post_id}`);
+        const like_count = document.querySelector(`.like-count-${post_id}`);
+        fetch(`/liked?post_id=${post_id}`)
+            .then(response => response.json())
+            .then(data => {
+                console.log(data);
+                like_count.innerText = data.like_count;
+                if (data.liked) {
+                    like_btn.innerHTML = '<i class="bi bi-suit-heart-fill"></i>';
+                } else {
+                    like_btn.innerHTML = '<i class="bi bi-suit-heart"></i>';
+                }
+            });
+    }
+</script>
+
+<div class="container">
+    <!-- START profile images / icon + background -->
+    <div class="row mt-3">
+        <div class="col-12 rounded-5">
+            <div class="profile-img-container">
+                <div class="background-img">
+                    {% if profile_img.profile_img %}
+                    <div id="p-img-box">
+                        <img src="{{ profile_img.profile_img.url }}" class="d-block w-100 rounded-3" height="200" alt="">
+                    </div>
+                    {% else %}
+                    <div id="p-img-box">
+                        <img src="https://images.unsplash.com/photo-1542401886-65d6c61db217?w=700&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8YnJvd258ZW58MHx8MHx8fDA%3D" class="d-block w-100 rounded-3" height="200" alt="">
+                    </div>
+                    {% endif %}
+                </div>
+                <!-- <div class="icon-img"> -->
+                {% if profile_img.icon_img %}
+                <div id="i-img-box" class="icon-img">
+                    <img src="{{ profile_img.icon_img.url }}" alt="{{ profile_img.user }}" loading="lazy" class="mt-2">
+                </div>
+                {% else %}
+                <div id="i-img-box" class="user-icon icon-img">
+                    <i class="bi bi-person-fill"></i>
+                </div>
+                {% endif %}
+                <!-- </div> -->
+
+                <!-- START edit profile img -->
+                <!-- Button trigger modal -->
+                {% if user == profile_user %}
+                <div class="d-grid justify-content-end mt-2">
+                    <button type="button" id="edit-profile" class="btn btn-sm btn-outline-dark rounded-5" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                        <i class="bi bi-pencil-fill"></i> Edit Profile
+                    </button>
+                </div>
+
+                <!-- Modal -->
+                <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="modal_edit_profile_label" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h1 class="modal-title fs-5" id="modal_edit_profile_label">Edit Profile Photo</h1>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <form id="p-form">
+                                    {% csrf_token %}
+
+                                    <!-- START profile img & input -->
+                                    {% if profile_img.profile_img %}
+                                    <figure class="figure">
+                                        <div id="img-box-p-form">
+                                            <img src="{{ profile_img.profile_img.url }}" class="d-block w-100 rounded-3" height="200" alt="">
+                                        </div>
+                                        <figcaption class="figure-caption">Your Current Photo</figcaption>
+                                    </figure>
+                                    {% else %}
+                                    <figure class="figure">
+                                        <div id="img-box-p-form">
+                                        </div>
+                                        <figcaption class="figure-caption">Your Current Photo</figcaption>
+                                    </figure>
+                                    {% endif %}
+                                    {{ p_form.as_p }}
+                                    <!-- END profile img & input -->
+
+                                    <hr class="text-warning-emphasis">
+
+                                    <!-- START icon img and input -->
+                                    {% if profile_img.icon_img %}
+                                    <figure class="figure">
+                                        <div id="img-box-i-form">
+                                            <img src="{{ profile_img.icon_img.url }}" class="d-block w-100 rounded-3" height="200" alt="">
+                                        </div>
+                                        <figcaption class="figure-caption">Your Current Icon Photo</figcaption>
+                                    </figure>
+                                    {% else %}
+                                    <figure class="figure">
+                                        <div id="img-box-i-form">
+                                        </div>
+                                        <figcaption class="figure-caption">Your Current Icon Photo</figcaption>
+                                    </figure>
+                                    {% endif %}
+                                    {{ i_form.as_p }}
+                                    <!-- END icon img and input -->
+
+                                    <div class="modal-footer mt-2">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                        <button type="button" class="btn btn-primary" onclick="submit_handler({{ user.id }})" data-bs-dismiss="modal">Save Change</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+                <!-- END edit profile img -->
+            </div>
+        </div>
+        <!-- END profile images / icon + background -->
+
+        <!-- START user info -->
+        <div class="row">
+            <div class="col-12 d-flex justify-content-center">
+                <div class="mt-5">
+                    <h3 class="display-5 text-center mt-2">&nbsp;@{{ profile_user }}</h3>
+                    <div class="d-flex gap-4">
+                        <p>Follower <b>{{ follower.count }}</b></p>
+                        <p>Following <b>{{ following.count }}</b></p>
+                        <p>Post&nbsp;<b>{% if not posts.count %}0{% else %}{{ posts.count }}{% endif %}</b></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-4 mx-auto">
+
+                <!-- START follow / unfollow logic -->
+                {% if user.is_authenticated %}
+                {% if user != profile_user %}
+                <div class="follow d-grid justify-content-center">
+                    {% if isFollowing %}
+                    <form action="{% url 'unfollow_user' %}" method="POST" class="mb-2">
+                        {% csrf_token %}
+                        <input type="hidden" name="unfollowing" value="{{ profile_user }}">
+                        <input type="submit" class="px-5 py-1 rounded-5 btn btn-dark" value="Unfollow">
+                    </form>
+                    {% else %}
+                    <form action="{% url 'follow_user' %}" method="POST" class="mb-2">
+                        {% csrf_token %}
+                        <input type="hidden" name="following" value="{{ profile_user }}">
+                        <input type="submit" class="px-5 py-1 rounded-5 btn btn-dark" value="Follow">
+                    </form>
+                    {% endif %}
+                </div>
+                {% endif %}
+                {% endif %}
+                <!-- END follow / unfollow logic -->
+
+            </div>
+        </div>
+        <!-- END user info -->
+
+        <hr class="text-warning-emphasis">
+
+        <!-- START user posts -->
+        <div class="row">
+            {% if not posts %}
+            <h1 class="text-center">No post yet</h1>
+            {% else %}
+            {% for posts in posts %}
+            <div class="col-6 col-md-4 col-lg-3 mt-3">
+                <div class="img-container">
+                    {% if posts.post %}
+                    <img src="{{ posts.post.url }}" alt="{{ posts.title }}" class="img-fluid">
+                    <div class="overlay">
+                        <div class="d-flex justify-content-between mt-2 mx-3">
+                            <p class="text-light fw-bolder">
+                                {{ posts.category }}
+                            </p>
+                            {% if user.is_authenticated %}
+                            {% if not user == posts.user %}
+                            <form action="" method="POST">
+                                {% csrf_token %}
+                                <input type="submit" class="btn btn-sm fw-bolder btn-danger rounded-3" value="Save">
+                            </form>
+                            {% endif %}
+                            {% endif %}
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+                <div class="px-2">
+                    <div class="d-flex justify-content-between">
+                        {% if posts.title %}
+                        <small class="mb-0">
+                            <a href="{% url 'detail' posts.id %}" class="text-dark">{{ posts.title }}</a>
+                        </small>
+                        {% endif %}
+                        <!-- START like section -->
+                        <span class="liked d-flex gap-1">
+                            <small class="text-dark like-count-{{ posts.id }}">{{ posts.post_like.count }}</small>
+                            <div id="like-btn-{{ posts.id }}" class="liked text-danger" onclick="like_handler({{ posts.id }})">
+                                {% if posts.id in user_liked %}
+                                <i class="bi bi-suit-heart-fill"></i>
+                                {% endif %}
+                                {% if not posts.id in user_liked %}
+                                <i class="bi bi-suit-heart"></i>
+                                {% endif %}
+                            </div>
+                        </span>
+                        <!-- END like section -->
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+            {% endif %}
+        </div>
+        <!-- END user posts -->
+
+    </div>
+    {% endblock %}

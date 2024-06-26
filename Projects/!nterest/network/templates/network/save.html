@@ -1,0 +1,10 @@
+{% extends "network/layout.html" %}
+{% load static %}
+{% block body %}
+
+{% if not save_post %}
+<p>You don't save photos yet!</p>
+{% else %}
+"post!"
+{% endif %}
+{% endblock %}

@@ -1,0 +1,65 @@
+{% extends "network/layout.html" %}
+{% load static %}
+{% block body %}
+<script>
+    function add_category() {
+        const category_input = document.getElementById('input_field');
+        const category_btn = document.getElementById('category_btn');
+        category_input.style.display = category_input.style.display === 'block' ? 'none' : 'block';
+    }
+
+    function remove_field() {
+        const category_input = document.getElementById('input_field');
+        category_input.style.display = 'none'
+    }
+</script>
+<div class="container">
+    <div class="row">
+        <div class="col-12 col-lg-8 mx-auto mt-5">
+            <h3>Create Post</h3>
+            <hr class="text-warning-emphasis">
+            <div class="mt-5">
+                <form action="{% url 'create' %}" method="POST">
+                    {% csrf_token %}
+                    <label for="inputGroupFile04" class="form-label">Upload Image</label>
+                    <div class="input-group">
+                        <input type="file" name="file" class="form-control" id="inputGroupFile04" aria-describedby="inputGroupFileAddon04" aria-label="Upload">
+                        <button class="btn btn-warning" type="button" id="inputGroupFileAddon04"><i class="bi bi-arrow-up-circle-fill"></i></button>
+                    </div>
+                    <div class="form-text mb-3" id="basic-addon4">Example help text goes outside the input group.</div>
+                    <div class="mb-3">
+                        <label for="exampleFormControlInput1" class="form-label">Title</label>
+                        <input type="text" name="title" class="form-control" id="exampleFormControlInput1" placeholder="Add a title">
+                    </div>
+                    <div class="mb-3">
+                        <label for="exampleFormControlTextarea1" class="form-label">Description</label>
+                        <textarea class="form-control" id="exampleFormControlTextarea1" name="description" rows="3">Add a detailed description</textarea>
+                    </div>
+                    <div class="row mb-3">
+                        <label for="category_select" class="form-label">Category</label>
+                        <div class="col-6">
+                            <div class="input-group">
+                                <select id="category_select" name="category_select" class="form-select" aria-label="Default select example" onclick="remove_field()">
+                                    <option selected>Open this select menu</option>
+                                    <option value="1">One</option>
+                                    <option value="2">Two</option>
+                                    <option value="3">Three</option>
+                                </select>
+                                <div id="category_btn" class="btn btn-warning fs-6" onclick="add_category()"><i class="bi bi-plus-circle-fill"></i></div>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div id="input_field" class="ms-0" style="display: none;">
+                                <input type="text" name="category_input" class="form-control rounded-5" id="category_input" placeholder="Add new category">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="d-grid justify-content-end">
+                        <input type="button" class="btn btn-warning rounded-5 px-4" value="Post">
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

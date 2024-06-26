@@ -1,0 +1,179 @@
+{% extends "network/layout.html" %}
+{% load static %}
+{% block body %}
+<script>
+    function like_handler(post_id) {
+        const like_btn = document.getElementById(`like-btn-${post_id}`);
+        const like_count = document.querySelector(`.like-count-${post_id}`);
+        fetch(`/liked?post_id=${post_id}`)
+            .then(response => response.json())
+            .then(data => {
+                console.log(data);
+                like_count.innerText = data.like_count;
+                if (data.liked) {
+                    like_btn.innerHTML = '<i class="bi bi-suit-heart-fill"></i>';
+                } else {
+                    like_btn.innerHTML = '<i class="bi bi-suit-heart"></i>';
+                }
+            });
+    }
+
+    function toggle_menu() {
+        const menu_bar = document.getElementById('menu-bar');
+        menu_bar.style.display = menu_bar.style.display === 'none' ? 'block' : 'none';
+    }
+</script>
+
+
+<div class="container">
+    <div class="row mt-5">
+        <div class="col-12 mx-auto p-sm-0">
+
+            <!-- START post image & details + comment -->
+            <div class="row">
+
+                <!-- START image section -->
+                <div class="col-12 col-lg-6">
+                    <img src="{{ post.post.url }}" class="img-fluid" width="600" alt="">
+
+                    <!-- START post edit & delete function -->
+                    {% if post.user == request.user %}
+                    <div class="menu-btn mt-3">
+                        <button class="btn btn-sm btn-outline-dark rounded-5" onclick="toggle_menu()">
+                            <i class="bi bi-three-dots"></i>
+                        </button>
+                    </div>
+                    <div class="menu-container">
+                        <ul class="menu-bar bg-body-tertiary rounded-2 list-unstyled" id="menu-bar">
+                            <li class="py-2 ps-2 pe-4 rounded-top-2">Edit</li>
+                            <li class="py-2 ps-2 pe-4 rounded-bottom-2">Delete</li>
+                        </ul>
+                    </div>
+                    {% endif %}
+                    <!-- END post edit & delete function -->
+
+                </div>
+                <!-- END image section -->
+
+                <!-- START detail + comment content -->
+                <div class="col-12 col-lg-6 mt-3">
+
+                    <div class="d-flex justify-content-between">
+                        <div class="detail-content">
+                            <a class="text-decoration-none" style="color:#755e51;" href="{% url 'profile' post.user.id %}">
+                                <h3 class="display-4">
+                                    <i class="bi bi-person-circle"></i>
+                                    <span class="user-link">{{ post.user }}</span>
+                                </h3>
+                            </a>
+                            <div class="d-flex flex-wrap justify-content-between gap-5">
+                                <h4>{{ post.title }} | <span class="fs-5">{{ post.category }}</span></h4>
+                                <small class="text-secondary">{{ post.date_posted | date:"m/d/Y"}}</small>
+                            </div>
+                            <br>
+                            {% if post.description %}
+                            <p class="fw-lighter fs-5">{{ post.description }}</p>
+                            {% endif %}
+                        </div>
+
+                    </div>
+                    <!-- END detail content -->
+
+                    <!-- START like & save function -->
+                    <div class="d-flex gap-3 mt-4 mb-1">
+                        <!-- like function -->
+                        <div class="liked d-flex gap-1 fs-5">
+                            <div id="like-btn-{{ post.id }}" class="liked text-danger" onclick="like_handler({{ post.id }})">
+                                {% if post.id in user_liked %}
+                                <i class="bi bi-suit-heart-fill"></i>
+                                {% endif %}
+                                {% if not post.id in user_liked %}
+                                <i class="bi bi-suit-heart"></i>
+                                {% endif %}
+                            </div>
+                            <small class="like-count-{{post.id }} text-dark">{{ post.post_like.count}}</small>
+                        </div>
+                        <!-- save function -->
+                        {% if user.is_authenticated %}
+                        <div class="save-btn fs-5" id="save-btn">
+                            {% if saved.is_save %}
+                            <a href="/saved?post_id={{ post.id }}" class="text-success"><i class="bi bi-bookmark-fill"></i></a>
+                            {% else %}
+                            <a href="/saved?post_id={{ post.id }}" class="text-success"><i class="bi bi-bookmark"></i></a>
+                            {% endif %}
+                        </div>
+                        {% endif %}
+                    </div>
+                    <!-- END like & save function -->
+
+                    <hr class="text-warning-emphasis mt-0">
+
+                    <!-- START comment section -->
+                    <div class="mt-5">
+                        <h5>Comments</h5>
+                        {% if comments %}
+                        <p>comment here</p>
+                        {% else %}
+                        <p>No comments.</p>
+                        {% endif %}
+                        {% if user.is_authenticated %}
+                        <form id="comment_form" class="mx-3" action="" method="POST">
+                            {% csrf_token %}
+                            <div class="input-group">
+                                <input type="text" class="form-control rounded-start-5" placeholder="Comment">
+                                <button class="btn btn-warning rounded-end-5" type="button" id="button-addon2"><i class="bi bi-send-fill"></i></button>
+                            </div>
+                        </form>
+                        {% endif%}
+                    </div>
+                    <!-- END comment section -->
+
+                </div>
+            </div>
+            <!-- END post image & details + comments -->
+
+        </div>
+    </div>
+
+    <!-- START related post -->
+    <div class="row mt-5">
+        <div class="col-12">
+            <h3 class="text-center">{{ post.category }}</h3>
+        </div>
+    </div>
+
+    <hr class="text-warning-emphasis">
+
+    <div class="row my-5">
+        <div class="col-12 mx-auto d-flex flex-wrap gap-3">
+            {% for posts in categorized_post %}
+            <div class="f-container">
+                <div class="img-container">
+                    {% if posts.post %}
+                    <img src="{{ posts.post.url }}" alt="{{ posts.title }}" class="img-fluid" width="200">
+                    <a href="{% url 'detail' posts.id %}">
+                        <div class="overlay d-flex justify-content-around">
+                            <div class="d-grid align-items-end">
+                                <span class="text-light fw-bolder m-2">
+                                    {{ posts.title }}
+                                </span>
+                            </div>
+                        </div>
+                    </a>
+                    {% endif %}
+                </div>
+                <a class="text-decoration-none" style="color:#755e51;" href="#">
+                    <p class="fs-5">
+                        <i class="bi bi-person-circle"></i>
+                        <span class="user-link">{{ posts.user }}</span>
+                    </p>
+                </a>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    <!-- END related post -->
+
+</div>
+
+{% endblock %}

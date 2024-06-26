@@ -1,0 +1,39 @@
+{% extends "network/layout.html" %}
+{% load static %}
+{% block body %}
+<div class="container">
+
+    <div class="row">
+        {% for posts in all_post %}
+        <div class="col-6 col-md-4 col-lg-3 px-1">
+            <div class="mt-3">
+                <div class="img-container">
+                    {% if posts.post %}
+                    <img src="{{ posts.post.url }}" alt="" class="img-fluid rounded-4">
+                    <div class="overlay ps-3 rounded-bottom-4">
+                        <span class="text fw-bolder">
+                            {{ posts.category }}
+                        </span>
+                    </div>
+                    {% endif %}
+                </div>
+                <div class="px-2">
+                    {% if posts.title %}
+                    <small class="mb-0">{{ posts.title }}</small>
+                    {% endif %}
+                    <a class="text-decoration-none" style="color:#755e51;" href="#"><h4><i class="bi bi-person-circle"></i>&nbsp;<small class="user-link fs-6 fw-lighter">{{ posts.user }}</small></h4></a>
+                    <!-- <div class="d-flex justify-content-between"> -->
+
+                    <!-- <small>{{ posts.date_posted | date:"m/d/y"}}</small> -->
+                    <!-- </div> -->
+                    <!-- {% if posts.description %}
+                    <small>{{ posts.description }}</small>
+                    {% endif %} -->
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+{% endblock %}

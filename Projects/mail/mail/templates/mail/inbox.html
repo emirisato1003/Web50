@@ -1,0 +1,65 @@
+{% extends "mail/layout.html" %}
+{% load static %}
+
+{% block body %}
+<div class="row m-0">
+    <div class="sidebar col-lg-2 col-md-3">
+        <ul class="nav nav-underline flex-column">
+            <h4 class="fw-lighter">CS50 Mail</h4>
+            <span><small><i class="fa-regular fa-user"></i> {{ request.user.email }}</small></span>
+            <hr>
+            <li class="nav-link" id="inbox"><i class="fa-solid fa-inbox"></i> Inbox</li>
+            <li class="nav-link" id="compose"><i class="fa-solid fa-plus"></i> New Email</button>
+            </li>
+            <li class="nav-link" id="sent"><i class="fa-solid fa-paper-plane"></i> Sent</li>
+            <li class="nav-link" id="archived"><i class="fa-solid fa-box-archive"></i> Archived</li>
+            <!-- <li class="nav-link" id="trash"><i class="fa-solid fa-trash"></i> Trash</li> -->
+            <a class="btn btn-outline-light rounded-5 mt-3" href="{% url 'logout' %}">Log Out</a>
+        </ul>
+    </div>
+
+
+
+    <div class="col-lg-6 col-md-9 my-3 mx-auto border border-primary-subtle rounded-5 p-5">
+        <div id="emails-view" class="emails-view">
+        </div>
+        <div id="single-email-view">
+        </div>
+        <div id="compose-view">
+            <h3 class="text-center">New Email</h3>
+            <div id="alert"></div>
+            <form id="compose-form">
+                <div class="row">
+                    <div class="col-1 col-form-label">From</div>
+                    <div class="col-11">
+                        <input disabled class="form-control" value="{{ request.user.email }}">
+                    </div>
+                </div>
+                <div class="mb-3 row">
+                    <div class="col-1 col-form-label">To</div>
+                    <div class="col-11">
+                        <input id="compose-recipients" class="form-control">
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <input class="form-control" id="compose-subject" placeholder="Subject">
+                </div>
+                <div class="mb-3">
+                    <textarea class="form-control" id="compose-body" placeholder="Body" rows="20"></textarea>
+                </div>
+                <div class="d-grid justify-content-end">
+                    <input type="submit" value="Send" class="btn btn-outline-success" />
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+{% endblock %}
+
+{% block script %}
+<script src="{% static 'mail/inbox.js' %}"></script>
+<script src="https://kit.fontawesome.com/86cec43cf8.js" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+{% endblock %}

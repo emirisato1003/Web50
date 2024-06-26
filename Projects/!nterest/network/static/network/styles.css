@@ -1,0 +1,136 @@
+
+
+:root{
+    /* --blue:#839aa7;
+    --light-blue:#aeb7c2;
+    --off-white-bg:#f4e6d9;
+    --light-brown:#d9c9ba;
+    --brown:#755e51;
+    --darker-brown:#7e7575;
+    --black:#000;
+    --white:#fff;
+    --light-bg:#f5f5f5;
+    --border: .2rem solid #9c9292;  */
+    --green: #39696D;
+    --light-gray:#d2d2d2;
+    --white-gray:#eaeaea;
+    --dark-gray:#333333;
+    --white:#fff;
+    --black:#000;
+    --gray:#808080;
+    --border: .2rem solid var(--dark-gray);
+}
+
+body{
+    margin: 0;
+    background-color: var(--white-gray);
+    color:var(--dark-gray);
+}
+
+.navbar{
+    background-color: var(--green);
+}
+
+.dropdown-menu{
+    background-color: var(--dark-gray);
+    --bs-dropdown-link-hover-bg: var(--gray);
+    --bs-dropdown-link-active-bg: var(--white-gray);
+}
+
+li.nav-item a{
+    color: var(--white-gray);
+}
+
+li.nav-item a:hover{
+    color: var(--light-gray);
+}
+
+hr{
+    color: var(--border);
+}
+
+.img-container{
+    position: relative;
+}
+
+.overlay{
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    height: 100%;
+    /* background: linear-gradient(to bottom, #00000000 0%, #000000ae 100%); */
+    background-color: #00000051;
+    opacity: 0;
+    transition: .5s ease;
+}
+
+.img-container:hover .overlay {
+    opacity: 1;
+}
+
+.user-link:hover{
+    text-decoration: underline;
+}
+
+.background-img img{
+    object-fit: cover;
+    opacity: .7;
+}
+
+.profile-img-container{
+    position: relative;
+}
+
+.icon-img{
+    position: absolute;
+    top: 90%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+}
+
+.icon-img img{
+    width: 100%;
+    height: 100%;
+    border: 4px solid var(--white);
+    object-fit: cover;
+    border-radius: inherit;
+}
+
+.user-icon i{
+    font-size: 80px;
+}
+
+.user-icon{
+    background-color: var(--light-gray);
+    padding: 15px 35px;
+    position: absolute;
+    top: 90%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    object-position: 15% 100%;
+}
+
+.footer{
+    background-color: var(--green);
+    color: var(--white-gray);
+}
+
+.menu-container{
+    position: relative;
+}
+
+.menu-bar{
+    position: absolute;
+    z-index: 1;
+    display: none;
+}
+
+.menu-bar li:hover{
+    background-color: var(--light-gray);
+}

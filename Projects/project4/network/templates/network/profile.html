@@ -4,26 +4,24 @@
 
 <div class="container-fluid">
     <div class="row">
-        <div class="col bg-warning-subtle p-5">
+        <div class="col profile p-5">
 
-            <h4 class="display-6 "><i class="fa-regular fa-user"></i> @{{ username }}</h4>
-            <ul class="list-unstyled">
+            <h4 class="display-4"><i class="bi bi-person-fill"></i>
+                @{{ username }}</h4>
+            <ul class="mt-4 list-unstyled">
                 <li class="d-inline">Following {{ following.count }}</li>
                 <li class="ps-2 d-inline">Follower {{ follower.count }}</li>
             </ul>
-            <p>
-                bio: Lorem ipsum dolor sit amet, consectetur adipisicing elit. Sit distinctio suscipit quo incidunt! Corrupti officiis autem laboriosam, excepturi labore reiciendis dolorem ad. Praesentium quasi quae, incidunt nam delectus laboriosam quod.
-            </p>
             {% if user.is_authenticated %}
             {% if profile_user != request.user %}
             {% if isFollowing %}
-            <form action="{% url 'unfollow' %}" method="post">
+            <form action="{% url 'unfollow' %}" method="POST">
                 {% csrf_token %}
                 <input type="hidden" name="user_unfollowing" value="{{ profile_user }}">
                 <input type="submit" class="btn btn-dark" value="Unfollow">
             </form>
             {% else %}
-            <form action="{% url 'follow' %}" method="post">
+            <form action="{% url 'follow' %}" method="POST">
                 {% csrf_token %}
                 <input type="hidden" name="user_following" value="{{ profile_user }}">
                 <input type="submit" class="btn btn-outline-dark" value="Follow">
@@ -32,9 +30,8 @@
             {% endif %}
             {% endif %}
         </div>
-    </div>
-
-    <div class="row">
+    </div>    
+    <div class="row my-3">
         <div class="col">
             <!-- user's posts -->
             <div class="list-group mt-5">

@@ -28,13 +28,16 @@ class Follow(models.Model):
 class Like(models.Model):
     user_like = models.ForeignKey(User,on_delete=models.CASCADE, blank=True, null=True, related_name='user_like') 
     post = models.ForeignKey(Posts, on_delete=models.CASCADE, blank=True, null=True, related_name='post_like')
+    is_liked = models.BooleanField(default=False)
 
     def __str__(self):
         return f"{self.user_like} likes {self.post.post} posted by {self.post.user}"
 
-class Dislike(models.Model):
-    user_dislike = models.ForeignKey(User, on_delete=models.CASCADE, blank=True, null=True, related_name='user_dislike')
-    post_dislike = models.ForeignKey(Posts, on_delete=models.CASCADE, blank=True, null=True, related_name='post_dislike')
+class Comment(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, blank=True, null=True, related_name="comment_user")
+    post = models.ForeignKey(Posts, on_delete=models.CASCADE, blank=True, null=True, related_name="comment_post")
+    comment = models.CharField(max_length=1000)
+    date_created = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f'{self.user_dislike} dislike {self.post_dislike.post} posted by {self.post_dislike.user}'
+        return self.comment

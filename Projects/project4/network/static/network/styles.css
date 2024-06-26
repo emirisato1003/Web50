@@ -1,0 +1,38 @@
+body{
+    margin: 0;
+}
+
+a{
+    text-decoration: none;
+}
+i .heart:hover {
+    transition: all .2s ease-in-out;
+    transform: scale(1.3);
+    cursor: pointer;
+}
+
+.edit:hover{
+    cursor: pointer;
+    text-decoration: underline;
+}
+
+.profile{
+    background: linear-gradient(to top, #00000000 0%, #0000008c 100%);
+}
+
+.user{
+    text-decoration: none;
+    color: #000;
+}
+
+.user a:hover{
+    text-decoration: underline;
+}
+
+.comment:hover{
+    cursor: pointer;
+}
+
+.comment_content{
+    display: none;
+}
